@@ -1,4 +1,4 @@
-from .views import home_view, mine_block, get_chain, block_detail_view, attack_a_block
+from .views import home_view, mine_block, get_chain, block_detail_view, attack_a_block, delete_all_blocks
 from django.urls import path
 
 app_name = "JGChain"
@@ -7,4 +7,5 @@ urlpatterns = [
     path('mine_block/', mine_block, name="mine_block"),
     path('detail/<int:id>/', block_detail_view, name="block_detail_view"),
     path('attack/', attack_a_block, name="attack_block"),
+    path('delete_all_blocks/', delete_all_blocks, name="delete_all_blocks"),
 ]

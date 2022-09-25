@@ -8,9 +8,9 @@
 
         <div class="form-group row col-sm-12">
 
-            <label for="nonce" class="col-sm-2 col-form-label">Nonce</label>
+            <label for="difficulty" class="col-sm-2 col-form-label">Difficulty</label>
             <div class="col-sm-10">
-              <input type="number" class="form-control" id="nonce" name="nonce" value=0>
+              <input type="number" class="form-control" id="difficulty" name="difficulty" value=0 min="0" max="3">
             </div>
 
             <br><br><br>
@@ -51,6 +51,7 @@
         <p>Previous Hash : {{ MinedBlock.previous_hash}} </p>
         <p>Timestamp : {{ MinedBlock.timestamp}} </p>
         <p>Nonce : {{ MinedBlock.nonce}} </p>
+        <p>Difficulty : {{ MinedBlock.difficulty}} </p>
         <p>Block Data : {{ MinedBlock.data}} </p>
     </div><br>
     {% endif %}

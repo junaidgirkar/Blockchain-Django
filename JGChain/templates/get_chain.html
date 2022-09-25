@@ -3,6 +3,8 @@
 {% block content %}
 
 <div class="container">
+
+    {% if chain %}
         {% if secure %}
         <div class="alert alert-success">
         <strong>Success!</strong> THE CHAIN HAS NOT BEEN TAMPERED WITH.
@@ -13,7 +15,18 @@
             <strong>Danger!</strong> THE CHAIN HAS BEEN TAMPERED AT BLOCK ID {{ tampered_block_id }}.
           </div>
         {% endif %}
-        <br>
+
+        <form action={% url 'JGChain:delete_all_blocks' %}  method="POST">
+        <button type="submit" class="btn btn-warning">Delete All Blocks</button>
+        </form>
+        <br><br>
+    {% else %}
+
+    <div class="alert alert-primary" role="alert">
+        There are 0 blocks currently mined!
+      </div>
+
+    {% endif %}
         {% for item in chain %}
 
         {% if item.id != tampered_block_id %}
@@ -24,6 +37,8 @@
 
                 <p>Timestamp : {{ item.timestamp}} </p>
                 <p>Nonce : {{ item.nonce}} </p>
+                <p>Difficulty : {{ item.difficulty}} </p>
+
                 <p>Block Data : {{ item.data}} </p>
             </div>
             <hr>
@@ -35,6 +50,8 @@
 
             <p>Timestamp : {{ item.timestamp}} </p>
             <p>Nonce : {{ item.nonce}} </p>
+            <p>Difficulty : {{ item.difficulty}} </p>
+
             <p>Block Data : {{ item.data}} </p>
         </div>
         <hr>

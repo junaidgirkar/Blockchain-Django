@@ -1,5 +1,4 @@
-import imp
-import re
+import random
 from django.shortcuts import render
 from .models import Block, JGChain
 import hashlib, json
@@ -16,9 +15,9 @@ def home_view(request):
 def verify_blockchain():
     chain = Block.objects.all().order_by('id')
     previous_hash_data = chain[0].current_hash
-    for block in chain:
-        if(block.id == 1):
-            continue
+    for block in chain[1:]:
+        # if(block.id == 1):
+        #     continue
         if(block.previous_hash != previous_hash_data):
             return False, block.id - 1
         else:
@@ -28,8 +27,12 @@ def verify_blockchain():
 
 def get_chain(request):
     chain = Block.objects.all().order_by('-id')
-    secure, tampered_block_id = verify_blockchain()
-    return render(request, "get_chain.html", {'chain': chain, 'secure': secure, 'tampered_block_id': tampered_block_id})
+    if(len(chain)>0):
+        secure, tampered_block_id = verify_blockchain()
+        return render(request, "get_chain.html", {'chain': chain, 'secure': secure, 'tampered_block_id': tampered_block_id})
+    else:
+        return render(request, "get_chain.html", {'chain': chain, 'secure' : True})
+
 
 
 
@@ -37,10 +40,8 @@ def get_chain(request):
 def hash(block):
     # assuming obj is your model instance
     json_data = model_to_dict(block)
-    print(json_data)
     if 'current_hash' in json_data: 
         del json_data['current_hash']
-    print(json_data)
     encoded_block = json.dumps(json_data, sort_keys=True).encode()
     second_encoded_block = hashlib.sha256(encoded_block).hexdigest().encode()
 
@@ -61,10 +62,22 @@ def mine_block(request):
         if(len(Block.objects.all()) == 0):
             previous_hash = '0000000000000000000000000000000000000000000000000000000000000000'
             data = request.POST.get('data')
-            nonce = request.POST.get('nonce')
-            new_block = Block.objects.create(previous_hash=previous_hash, data=data, nonce=nonce)
+            # nonce = request.POST.get('nonce')
+            difficulty = request.POST.get('difficulty')
+
+            new_block = Block.objects.create(previous_hash=previous_hash, data=data, difficulty=difficulty)
+
             current_hash = hash(new_block)
+
+            nonce = random.randint(0, 17223792749)
+            while(current_hash[0:int(difficulty)] != '0'*int(difficulty)):
+                new_block.nonce = nonce = random.randint(0, 17223792749)
+                new_block.save()
+                current_hash = hash(new_block)
+                print(current_hash)
+            
             new_block.current_hash = current_hash
+            new_block.nonce = nonce
             new_block.save()
             return render(request, "mine_block.html", {'MinedBlock': new_block})
         
@@ -72,10 +85,22 @@ def mine_block(request):
             previous_block = get_latest_block()
             previous_hash = previous_block.current_hash
             data = request.POST.get('data')
-            nonce = request.POST.get('nonce')
-            new_block = Block.objects.create(previous_hash=previous_hash, data=data, nonce=nonce)
+            # nonce = request.POST.get('nonce')
+            difficulty = request.POST.get('difficulty')
+
+            new_block = Block.objects.create(previous_hash=previous_hash, data=data, difficulty=difficulty)
             current_hash = hash(new_block)
+
+            nonce = random.randint(0, 17223792749)
+
+            while(current_hash[0:int(difficulty)] != '0'*int(difficulty)):
+                new_block.nonce = nonce = random.randint(0, 17223792749)
+                new_block.save()
+                current_hash = hash(new_block)
+                print(current_hash)
+
             new_block.current_hash = current_hash
+            new_block.nonce = nonce
             new_block.save()
             return render(request, "mine_block.html", {'MinedBlock': new_block})
 
@@ -99,3 +124,8 @@ def attack_a_block(request):
         block.save()
 
         return render(request, "attack_a_block.html", {'AttackedBlock': block})
+
+@csrf_exempt
+def delete_all_blocks(request):
+    Block.objects.all().delete()
+    return render(request, "get_chain.html")
