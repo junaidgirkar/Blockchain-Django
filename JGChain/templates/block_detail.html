@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <div class="container">
+        <h4>Block ID : {{ detail_block.id }} </h4>
+        <p>Previous Hash : {{ detail_block.previous_hash }} </p>
+        <p>Current Hash : {{ detail_block.current_hash }} </p>
+        <p>Timestamp : {{ detail_block.timestamp }} </p>
+        <p>Nonce : {{ detail_block.nonce }} </p>
+        <p>Block Data : {{ detail_block.data }} </p>
+    </div>
+
+{% endblock content %}

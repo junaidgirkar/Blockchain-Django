@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <div style="margin: auto; width: 50%; border: 3px solid green; padding: 10px;">
+    <form action={% url 'JGChain:mine_block' %}  method="POST">
+        {% csrf_token %}
+
+        <div class="form-group row col-sm-12">
+
+            <label for="nonce" class="col-sm-2 col-form-label">Nonce</label>
+            <div class="col-sm-10">
+              <input type="number" class="form-control" id="nonce" name="nonce" value=0>
+            </div>
+
+            <br><br><br>
+            <label for="data" class="col-sm-2 col-form-label">Transactions</label>
+            <div class="col-sm-10">
+                <textarea class="form-control" id="data" name="data" rows="3"></textarea>
+            </div>
+
+            <br>
+            <br>
+            <br>
+            <br>
+
+            <div class="container">
+                <div class="row">
+                  <div class="col text-center">
+                    <input type="submit" class="btn btn-success" value="Submit">
+                  </div>
+                </div>
+              </div>
+        </div>
+
+       
+
+    </div>
+    </form>
+    </div> 
+    
+    <hr>
+
+    {% if MinedBlock %}
+
+    <div class="block container">
+      <h2> MINED BLOCK </h2><br><br>
+
+      <a href = {% url 'JGChain:block_detail_view' id=MinedBlock.id %}> <h4>Block ID : {{ MinedBlock.id}} </h4> </a>
+        <p>Current Hash : {{ MinedBlock.current_hash}} </p>
+        <p>Previous Hash : {{ MinedBlock.previous_hash}} </p>
+        <p>Timestamp : {{ MinedBlock.timestamp}} </p>
+        <p>Nonce : {{ MinedBlock.nonce}} </p>
+        <p>Block Data : {{ MinedBlock.data}} </p>
+    </div><br>
+    {% endif %}
+
+    {% endblock content%}

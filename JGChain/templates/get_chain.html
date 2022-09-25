@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+        {% if secure %}
+        <div class="alert alert-success">
+        <strong>Success!</strong> THE CHAIN HAS NOT BEEN TAMPERED WITH.
+        </div>
+
+        {% else %}
+        <div class="alert alert-danger">
+            <strong>Danger!</strong> THE CHAIN HAS BEEN TAMPERED AT BLOCK ID {{ tampered_block_id }}.
+          </div>
+        {% endif %}
+        <br>
+        {% for item in chain %}
+            <div class="block">
+                <a href = {% url 'JGChain:block_detail_view' id=item.id %}> <h4>Block ID : {{ item.id}} </h4> </a>
+                <p>Previous Hash : {{ item.previous_hash}} </p>
+                <p>Current Hash : {{ item.current_hash}} </p>
+
+                <p>Timestamp : {{ item.timestamp}} </p>
+                <p>Nonce : {{ item.nonce}} </p>
+                <p>Block Data : {{ item.data}} </p>
+            </div>
+            <hr>
+        {% endfor %}
+</div>
+{% endblock content %}
