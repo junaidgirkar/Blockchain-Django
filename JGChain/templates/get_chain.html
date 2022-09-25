@@ -15,7 +15,9 @@
         {% endif %}
         <br>
         {% for item in chain %}
-            <div class="block">
+
+        {% if item.id != tampered_block_id %}
+            <div class="block">                
                 <a href = {% url 'JGChain:block_detail_view' id=item.id %}> <h4>Block ID : {{ item.id}} </h4> </a>
                 <p>Previous Hash : {{ item.previous_hash}} </p>
                 <p>Current Hash : {{ item.current_hash}} </p>
@@ -25,6 +27,19 @@
                 <p>Block Data : {{ item.data}} </p>
             </div>
             <hr>
+        {% else %}
+        <div class="block text-danger">                
+            <a href = {% url 'JGChain:block_detail_view' id=item.id %}> <h4>Block ID : {{ item.id}} </h4> </a>
+            <p>Previous Hash : {{ item.previous_hash}} </p>
+            <p>Current Hash : {{ item.current_hash}} </p>
+
+            <p>Timestamp : {{ item.timestamp}} </p>
+            <p>Nonce : {{ item.nonce}} </p>
+            <p>Block Data : {{ item.data}} </p>
+        </div>
+        <hr>
+        {% endif %}
+
         {% endfor %}
 </div>
 {% endblock content %}

@@ -14,11 +14,17 @@ def home_view(request):
     return render(request, "home.html")
 
 def verify_blockchain():
-    chain = Block.objects.all().order_by('-id')
-    for i in range(1, len(chain)):
-        if(chain[i].previous_hash != chain[i-1].current_hash):
-            return False, i+1
-    return True, 0
+    chain = Block.objects.all().order_by('id')
+    previous_hash_data = chain[0].current_hash
+    for block in chain:
+        if(block.id == 1):
+            continue
+        if(block.previous_hash != previous_hash_data):
+            return False, block.id - 1
+        else:
+            previous_hash_data = block.current_hash
+    return True, None
+
 
 def get_chain(request):
     chain = Block.objects.all().order_by('-id')
